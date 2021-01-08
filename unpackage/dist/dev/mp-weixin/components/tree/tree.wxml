@@ -1,1 +1,0 @@
-<view class="tree-container data-v-e2198d78"><block wx:for="{{$root.l0}}" wx:for-item="node" wx:for-index="__i0__" wx:key="m0"><tree-node class="tree-node data-v-e2198d78" vue-id="{{'4f747042-1-'+__i0__}}" data="{{node.$orig}}" indent="{{indent}}" props="{{config}}" level="{{level}}" bind:__l="__l"></tree-node></block></view>
