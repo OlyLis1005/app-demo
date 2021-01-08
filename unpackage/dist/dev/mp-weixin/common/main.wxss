@@ -1,0 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*每个页面公共css */
+.container {
+	padding: 20px;
+	font-size: 14px;
+	line-height: 24px;
+}
+
