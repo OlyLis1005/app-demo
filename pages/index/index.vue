@@ -2,7 +2,7 @@
 	<view>
 		<view class="navbar">
 			<view class="city-select">
-				<image class="list-icon" src="../../static/index/list.png"></image>
+				<image class="list-icon" src="../../static/pages/index/list.svg"></image>
 				广州
 			</view>
 			<view class="search-bar-wrapper">
@@ -13,7 +13,7 @@
 			<view class="list-item" v-for="item in list" :key="item.id">
 				<view class="list-item-title">
 					{{item.title}}
-					<text>{{item.status | statusFilter}}</text>
+					<text class="item-status" :class="{ 'error': item.status === '0' }">{{item.status | statusFilter}}</text>
 				</view>
 				<view class="list-item-info clearfix">
 					<view class="info-left">
@@ -133,6 +133,12 @@
 		.list-item-title {
 			padding: 5px 10px;
 			border-bottom: 1px solid #d8d8d8;
+			.item-status {
+				float: right;
+				&.error {
+					color: red;
+				}
+			}
 		}
 		.list-item-info {
 			text-align: center;
