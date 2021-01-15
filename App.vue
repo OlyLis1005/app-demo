@@ -12,7 +12,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/*每个页面公共css */
 	.container {
 		padding: 20px;
@@ -26,5 +26,23 @@
 		height: 0;
 		clear: both;
 		visibility: hidden;
+	}
+	
+	.flex-container {
+		display: flex;
+		&.vertical {
+			flex-direction: column;
+		}
+		.flex-content {
+			flex: auto;
+		}
+	}
+	
+	.pull-left {
+		float: left;
+	}
+	
+	.pull-right {
+		float: right;
 	}
 </style>

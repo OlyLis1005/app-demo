@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		<view class="list">
-			<view class="list-item" v-for="item in list" :key="item.id">
+			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id)">
 				<view class="list-item-title">
 					{{item.title}}
 					<text class="item-status" :class="{ 'error': item.status === '0' }">{{item.status | statusFilter}}</text>
@@ -64,6 +64,18 @@
 		methods: {
 			handleConfirm() {
 				console.log('searchValue', this.listQuery.query)
+			},
+			toDetail(id) {
+				console.log('toDetail');
+				uni.navigateTo({
+					url: '/pages/index/detail/index',
+					success() {
+						console.log('success');
+					},
+					fail(e) {
+						console.log(e);
+					}
+				})
 			}
 		},
 		filters: {
