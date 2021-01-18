@@ -15,9 +15,21 @@
 <style lang="scss">
 	/*每个页面公共css */
 	.container {
+		color: #333;
 		padding: 20px;
 		font-size: 14px;
 		line-height: 24px;
+	}
+	
+	.page-container {
+		background-color: #eee;
+		color: #333;
+		font-size: 14px;
+		
+		.panel {
+			background-color: #fff;
+			margin-bottom: 10px;
+		}
 	}
 	
 	.clearfix:after {

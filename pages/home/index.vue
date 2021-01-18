@@ -2,7 +2,7 @@
 	<view>
 		<view class="navbar">
 			<view class="city-select">
-				<image class="list-icon" src="../../static/pages/index/list.svg"></image>
+				<image class="list-icon" src="../../static/pages/home/list.svg"></image>
 				广州
 			</view>
 			<view class="search-bar-wrapper">
@@ -68,7 +68,7 @@
 			toDetail(id) {
 				console.log('toDetail');
 				uni.navigateTo({
-					url: '/pages/index/detail/index',
+					url: `/pages/index/detail/index?id=${id}`,
 					success() {
 						console.log('success');
 					},

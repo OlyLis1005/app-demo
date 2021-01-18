@@ -1,6 +1,6 @@
 <template>
 	<view class="cascader">
-		<view class="bread-crumb clearfix">
+		<view v-if="isShowNav" class="bread-crumb clearfix">
 			<view class="bread-crumb-root">当前：</view>
 			<view class="bread-crumb-item" v-for="(item, index) in breadCrumbList" :key="item.value" >
 				<text class="bread-crumb-text" @click="clickNav(item, index)">{{item.label}}</text>
@@ -11,7 +11,7 @@
 			<scroll-view scroll-x scroll-with-animation :scroll-left="scrollLeft" style="height:100%;">
 				<view class="options-row clearfix" :style="rowStyle">
 					<view class="options-column" v-for="(opitons, columnIndex) in optionsList" :key="columnIndex" :style="columnStyle">
-						<scroll-view scroll-y="true">
+						<scroll-view scroll-y style="height:100%">
 							<view class="options-item" v-for="(item, index) in opitons" :class="{'active': selectedValue[columnIndex] == item.value}" :key="item.value" @click="clickItem(item, columnIndex)">{{item.label}}</view>
 						</scroll-view>
 					</view>
@@ -33,6 +33,10 @@
 			options: {
 				type: Array,
 				default() {return []}
+			},
+			isShowNav: {
+				type: Boolean,
+				default: true
 			}
 		},
 		data() {
@@ -101,7 +105,7 @@
 				this.selectedValue = selectedValue
 				if (item.children) optionsList.splice(columnIndex + 1, 1, item.children)
 				this.optionsList = optionsList
-				this.$emit('change', selectedValue)
+				this.$emit('change', selectedValue, item)
 			}
 		}
 	}
@@ -147,8 +151,12 @@
 		.options-column {
 			float: left;
 			height: 100%;
-			border-right: 1px solid #d8d8d8;
+			
 			box-sizing: border-box;
+			
+			&:not(:last-child) {
+				border-right: 1px solid #d8d8d8;
+			}
 		}
 		
 		.options-item {

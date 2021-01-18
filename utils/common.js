@@ -4,3 +4,7 @@ export function getStyleString (styleObject) {
 	// console.log('styleString', styleString)
 	return styleString
 }
+
+export function isOk (res) {
+	return res.code === 200
+}
