@@ -14,6 +14,10 @@
 
 <style lang="scss">
 	/*每个页面公共css */
+    page {
+        height: 100%;
+    }
+
 	.container {
 		color: #333;
 		padding: 20px;
@@ -22,6 +26,7 @@
 	}
 	
 	.page-container {
+        height: 100%;
 		background-color: #eee;
 		color: #333;
 		font-size: 14px;
@@ -32,7 +37,7 @@
 		}
 	}
 	
-	.clearfix:after {
+	.clearfix::after {
 		content: "";
 		display: block;
 		height: 0;

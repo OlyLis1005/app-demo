@@ -1,6 +1,24 @@
 <template>
-	<view>
-		<view class="list-header">通用</view>
+	<view class="page-container">
+		<view class="user-info">
+			<view class="avatar">
+				<image v-if="hasLogin" :src="avatarUrl" mode="scaleToFill" style="height: 100%;width: 100%;"></image>
+			</view>
+			<view class="user-info-detail">
+				<view v-if="hasLogin">
+					<view class="user-name">
+						<text>{{ nickName }} | {{ department }}</text>
+					</view>
+					<view class="user-email">
+						<text>{{ email }}</text>
+					</view>
+				</view>
+				<view v-else>
+					<view class="click-to-login" @click="toLogin">点击登录</view>
+				</view>
+			</view>
+		</view>
+		<view class="list-header">安全</view>
 		<view class="list-container">
 			<uni-list>
 				<uni-list-item title="密码设置" link to="/pages/index/detail/index"></uni-list-item>
@@ -15,7 +33,7 @@
 				<uni-list-item title="常用功能设置" link></uni-list-item>
 				<uni-list-item title="图片质量设置" link rightText="高清"></uni-list-item>
 				<uni-list-item title="隐私设置" link></uni-list-item>
-				<uni-list-item title="清理缓存(0.80M)" link></uni-list-item>
+<!--				<uni-list-item title="清理缓存(0.80M)" link></uni-list-item>-->
 				<uni-list-item title="关于" link></uni-list-item>
 			</uni-list>
 		</view>
@@ -29,48 +47,79 @@
 	export default {
 		data() {
 			return {
-				href: 'https://uniapp.dcloud.io/component/README?id=uniui',
-				swiperCurrent: 0,
-				swiperList: [{
-						key: '0',
-						content: 'asdoiasd'
-					},
-					{
-						key: '1',
-						content: 'wruwoeriu'
-					},
-					{
-						key: '2',
-						content: '阿萨德煎熬is的简欧'
-					},
-					{
-						key: '3',
-						content: '不我还是多放圣诞节哦鸡'
-					},
-				],
-			}
-		},
-		methods: {
-			onSwipperChange(e) {
-				this.swiperCurrent = e.detail.current
+				hasLogin: true, // todo 正常为false然后从缓存获取数据
+				avatarUrl: 'https://img.xiaopiu.com/userImages/img21159694648f8.jpg',
+				nickName: '罗小明',
+				department: '兰州运营中心-风控部',
+				email: 'sing173@126.com',
 			}
 		},
 		computed: {
-			percentage() {
-				return (this.swiperCurrent + 1) / this.swiperList.length * 100
+		},
+		onLoad () {
+			// this.getUserInfo()
+		},
+		methods: {
+			getUserInfo() {
+				uni.getStorage({
+					key: 'userInfo',
+					success: res => {
+						const userInfo = res.data
+						this.nickName = userInfo.nickName
+						this.avatarUrl = userInfo.avatarUrl
+						this.hasLogin = true
+					},
+					fail: () => {
+					}
+				})
+			},
+			toLogin() {
+				uni.navigateTo({
+					url: '/pages/authorize/index'
+				})
 			}
-		}
+		},
 	}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+	.user-info {
+		background-color: $uni-color-primary;
+		padding: 10px;
+		display: flex;
+		color: #fff;
+
+		.avatar {
+			width: 50px;
+			height: 50px;
+			border: 1px solid #fff;
+		}
+		.user-info-detail {
+			flex: auto;
+			padding-left: 10px;
+		}
+
+		.user-name {
+			margin-bottom: 8px;
+		}
+
+		.user-email, .click-to-login {
+			font-size: 12px;
+			display: inline-block;
+			border: 1px solid #fff;
+			height: 20px;
+			line-height: 20px;
+			border-radius: 20px;
+			padding: 0 10px;
+		}
+	}
+
 	.list-header {
 		height: 40px;
 		line-height: 40px;
 		padding: 0 20px;
 		font-size: 12px;
 		color: #999;
-		background-color: #eee;
 	}
 	.list-container {
 		padding: 0 10px;

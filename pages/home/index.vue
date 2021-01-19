@@ -1,43 +1,44 @@
 <template>
-	<view>
+	<view class="page-container">
 		<view class="navbar">
 			<view class="city-select">
 				<image class="list-icon" src="../../static/pages/home/list.svg"></image>
 				广州
 			</view>
 			<view class="search-bar-wrapper">
-				<input v-model="listQuery.query" class="search-bar" placeholder="快速搜索台区智能终端" :radius="36" @confirm="handleConfirm" />
+				<input v-model="listQuery.keyword" class="search-bar" placeholder="快速搜索台区智能终端" :radius="36" @confirm="handleConfirm" />
 			</view>
 		</view>
 		<view class="list">
 			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id)">
 				<view class="list-item-title">
-					{{item.title}}
+					<text>终端{{item.deviceId}}</text>
 					<text class="item-status" :class="{ 'error': item.status === '0' }">{{item.status | statusFilter}}</text>
 				</view>
 				<view class="list-item-info clearfix">
 					<view class="info-left">
 						<view class="info-item">
 							<text class="info-item-label">台区售电量：</text>
-							12345
+							<text>{{ item.energySale }}</text>
 						</view>
 						<view class="info-item">
 							<text class="info-item-label">台区供电量：</text>
-							23333
+							<text>{{ item.energySupply }}</text>
 						</view>
 					</view>
 					<view class="info-right">
 						<view class="info-item">
 							<text class="info-item-label">台区线损电量：</text>
-							1000
+							<text>{{ item.energyLost }}</text>
 						</view>
 						<view class="info-item">
 							<text class="info-item-label">台区线损值：</text>
-							5%
+							<text>{{ item.lineLost }}%</text>
 						</view>
 					</view>
 				</view>
 			</view>
+			<uni-load-more :status="loadStatus" @clickLoadMore="loadMore"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -47,28 +48,61 @@
 		components: {uniIcons},
 		data() {
 			return {
+				loadStatus: 'more',
 				listQuery: {
-					query: ''
+					keyword: '',
+					pageNum: 1,
+					pageSize: 5
 				},
-				list: [
-					{ id: 0, title: '终端No.000000010(22016893982)', status: '1', a: '13223', b: '123156', c: '12445', d: '123123' },
-					{ id: 1, title: '终端No.000000010(22016893982)', status: '0', a: '13223', b: '123156', c: '12445', d: '123123' },
-					{ id: 2, title: '终端No.000000010(22016893982)', status: '1', a: '13223', b: '123156', c: '12445', d: '123123' },
-					{ id: 3, title: '终端No.000000010(22016893982)', status: '1', a: '13223', b: '123156', c: '12445', d: '123123' },
-					{ id: 4, title: '终端No.000000010(22016893982)', status: '1', a: '13223', b: '123156', c: '12445', d: '123123' },
-					{ id: 5, title: '终端No.000000010(22016893982)', status: '1', a: '13223', b: '123156', c: '12445', d: '123123' },
-				]
+				list: []
 			}
 		},
-		onLoad() {},
+		onLoad() {
+			this.getList()
+		},
+		onReachBottom() {
+			console.log('onReachBottom')
+			this.loadMore()
+		},
+		onPullDownRefresh() {
+			console.log('onPullDownRefresh')
+			this.listQuery.pageNum = 1
+			this.list = []
+			this.getList()
+		},
 		methods: {
+			getList(loadMore = false) {
+				this.loadStatus = 'loading'
+				this.$request({
+					url: '/iot/terminal/list',
+					method: 'POST',
+					data: this.listQuery,
+				}).then(res => {
+					this.loadStatus = 'more'
+					if (res.code !== 200) return
+					const { list, total, totalPage } = res.data
+					console.log('list', list)
+					this.list = loadMore ? [...this.list, ...list] : list
+					if (this.listQuery.pageNum >= totalPage) {
+						this.loadStatus = 'noMore'
+					} else {
+						this.loadStatus = 'more'
+					}
+				})
+			},
+			loadMore() {
+				if (this.loadStatus === 'noMore') return
+				this.listQuery.pageNum++
+				this.getList(true)
+			},
 			handleConfirm() {
 				console.log('searchValue', this.listQuery.query)
+				this.getList()
 			},
 			toDetail(id) {
 				console.log('toDetail');
 				uni.navigateTo({
-					url: `/pages/index/detail/index?id=${id}`,
+					url: `/pages/home/detail/index?id=${id}`,
 					success() {
 						console.log('success');
 					},
@@ -132,7 +166,7 @@
 	}
 	
 	.list {
-		background-color: #eee;
+		/*background-color: #eee;*/
 		padding: 10px;
 	}
 	

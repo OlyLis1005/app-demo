@@ -10,7 +10,7 @@
 		<view class="cascader-content">
 			<scroll-view scroll-x scroll-with-animation :scroll-left="scrollLeft" style="height:100%;">
 				<view class="options-row clearfix" :style="rowStyle">
-					<view class="options-column" v-for="(opitons, columnIndex) in optionsList" :key="columnIndex" :style="columnStyle">
+						<view class="options-column" v-for="(opitons, columnIndex) in optionsList" :key="columnIndex" :style="columnStyle">
 						<scroll-view scroll-y style="height:100%">
 							<view class="options-item" v-for="(item, index) in opitons" :class="{'active': selectedValue[columnIndex] == item.value}" :key="item.value" @click="clickItem(item, columnIndex)">{{item.label}}</view>
 						</scroll-view>

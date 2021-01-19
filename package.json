@@ -1,0 +1,23 @@
+{
+  "name": "app-demo",
+  "version": "1.0.0",
+  "description": "1.下载HBuilder（编译工具，安装依赖），可以仅作为编译工具，然后结合自己习惯的IDE开发",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/html5plus": "^1.0.1",
+    "@types/uni-app": "^1.4.3"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlyLis1005/app-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OlyLis1005/app-demo/issues"
+  },
+  "homepage": "https://github.com/OlyLis1005/app-demo#readme"
+}

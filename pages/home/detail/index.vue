@@ -33,10 +33,13 @@
 			<view class="detail-header">
 				<text class="detail-title">终端拓扑</text>
 			</view>
-			selectedValue:
-			<text v-for="item in selectedValue" :key="item">{{item}},</text>
+<!--			<view>-->
+<!--				selectedValue:-->
+<!--				<text v-for="item in selectedValue" :key="item">{{item}},</text>-->
+<!--			</view>-->
+
 			<view class="cascader-wrapper">
-				<cascader :options="treeData" :value="selectedValue" @change="handleChange"></cascader>
+				<cascader :options="treeData" :value="selectedValue" @change="handleChange" :is-show-nav="false"></cascader>
 			</view>
 		</view>
 	</view>
@@ -120,10 +123,10 @@
 		onLoad(options) {
 			console.log('onLoad', options);
 			this.id = options.id
-			this.getData()
+			this.getData(this.id)
 		},
 		methods: {
-			getData(id = 6) {
+			getData(id) {
 				this.$request({
 					url: `/iot/terminal/topology?terminalId=${id}`,
 					method: 'POST'
@@ -143,7 +146,8 @@
 				})
 			},
 			handleChange(selectedValue, clickItem) {
-				console.log('handleChange', selectedValue, clickItem)
+				console.log('handleChange', selectedValue)
+				console.log(clickItem)
 				this.selectedValue = selectedValue
 			},
 			onConfirm(selectedValue) {
@@ -181,9 +185,10 @@
 		}
 		
 		.detail-info-item {
+			font-size: 12px;
 			position: relative;
 			text-align: center;
-			padding: 10px 0;
+			padding: 5px 0;
 			float: left;
 			width: 50%;
 			box-sizing: border-box;
