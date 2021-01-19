@@ -33,11 +33,6 @@
 			<view class="detail-header">
 				<text class="detail-title">终端拓扑</text>
 			</view>
-<!--			<view>-->
-<!--				selectedValue:-->
-<!--				<text v-for="item in selectedValue" :key="item">{{item}},</text>-->
-<!--			</view>-->
-
 			<view class="cascader-wrapper">
 				<cascader :options="treeData" :value="selectedValue" @change="handleChange" :is-show-nav="false"></cascader>
 			</view>
