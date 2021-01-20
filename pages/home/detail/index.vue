@@ -118,6 +118,9 @@
 		onLoad(options) {
 			console.log('onLoad', options);
 			this.id = options.id
+			// this.getData(this.id)
+		},
+		onShow() {
 			this.getData(this.id)
 		},
 		methods: {

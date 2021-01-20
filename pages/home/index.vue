@@ -57,7 +57,7 @@
 				list: []
 			}
 		},
-		onLoad() {
+		onShow() {
 			this.getList()
 		},
 		onReachBottom() {
@@ -79,6 +79,7 @@
 					data: this.listQuery,
 				}).then(res => {
 					this.loadStatus = 'more'
+					uni.stopPullDownRefresh()
 					if (res.code !== 200) return
 					const { list, total, totalPage } = res.data
 					console.log('list', list)

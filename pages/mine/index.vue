@@ -18,27 +18,29 @@
 				</view>
 			</view>
 		</view>
-		<view class="list-header">安全</view>
-		<view class="list-container">
-			<uni-list>
-				<uni-list-item title="密码设置" link to="/pages/index/detail/index"></uni-list-item>
-				<uni-list-item title="已实名认证" link></uni-list-item>
-				<uni-list-item title="修改绑定手机号" link rightText="186****6981"></uni-list-item>
-			</uni-list>
-		</view>
-		<view class="list-header">通用</view>
-		<view class="list-container">
-			<uni-list>
-				<uni-list-item title="接收通知" :show-switch="true" @switchChange="switchChange"></uni-list-item>
-				<uni-list-item title="常用功能设置" link></uni-list-item>
-				<uni-list-item title="图片质量设置" link rightText="高清"></uni-list-item>
-				<uni-list-item title="隐私设置" link></uni-list-item>
-<!--				<uni-list-item title="清理缓存(0.80M)" link></uni-list-item>-->
-				<uni-list-item title="关于" link></uni-list-item>
-			</uni-list>
-		</view>
-		<view class="logout-wrapper">
-			<button type="warn">退出登录</button>
+		<view v-if="hasLogin">
+			<view class="list-header">安全</view>
+			<view class="list-container">
+				<uni-list>
+					<uni-list-item title="密码设置" link to="/pages/index/detail/index"></uni-list-item>
+					<uni-list-item title="已实名认证" link></uni-list-item>
+					<uni-list-item title="修改绑定手机号" link rightText="186****6981"></uni-list-item>
+				</uni-list>
+			</view>
+			<view class="list-header">通用</view>
+			<view class="list-container">
+				<uni-list>
+					<uni-list-item title="接收通知" :show-switch="true" @switchChange="switchChange" :switchChecked="switchChecked"></uni-list-item>
+					<uni-list-item title="常用功能设置" link></uni-list-item>
+					<uni-list-item title="图片质量设置" link rightText="高清"></uni-list-item>
+					<uni-list-item title="隐私设置" link></uni-list-item>
+					<!--				<uni-list-item title="清理缓存(0.80M)" link></uni-list-item>-->
+					<uni-list-item title="关于" link></uni-list-item>
+				</uni-list>
+			</view>
+			<view class="logout-wrapper">
+				<button type="warn" @click="logout">退出登录</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -47,22 +49,51 @@
 	export default {
 		data() {
 			return {
-				hasLogin: true, // todo 正常为false然后从缓存获取数据
+				hasLogin: false,
 				avatarUrl: 'https://img.xiaopiu.com/userImages/img21159694648f8.jpg',
 				nickName: '罗小明',
 				department: '兰州运营中心-风控部',
 				email: 'sing173@126.com',
+				switchChecked: false
 			}
 		},
 		computed: {
 		},
-		onLoad () {
-			// this.getUserInfo()
+		onShow () {
+			this.getUserInfoFromStorage()
 		},
 		methods: {
-			getUserInfo() {
+			getUserInfoFromStorage() {
 				uni.getStorage({
 					key: 'userInfo',
+					success: res => {
+						const userInfo = res.data
+						const { username, roles, icon } = userInfo
+						this.nickName = username
+						this.department = roles ? roles[0] : ''
+						this.avatarUrl = icon
+						this.hasLogin = true
+					},
+					fail: this.getUserInfo
+				})
+			},
+			getUserInfo() {
+				this.$request({
+					url: '/admin/info',
+					method: 'GET'
+				}).then(res => {
+					if (res.code !== 200) return
+					const userInfo = res.data
+					uni.setStorage({
+						key: 'userInfo',
+						data: userInfo,
+						success: this.getUserInfoFromStorage
+					})
+				})
+			},
+			getWechartInfo() {
+				uni.getStorage({
+					key: 'wechartInfo',
 					success: res => {
 						const userInfo = res.data
 						this.nickName = userInfo.nickName
@@ -77,6 +108,16 @@
 				uni.navigateTo({
 					url: '/pages/authorize/index'
 				})
+			},
+			switchChange (value) {
+				this.switchChecked = value
+			},
+			logout() {
+				this.hasLogin = false
+				this.nickName = ''
+				this.department = ''
+				uni.removeStorage({key: 'userInfo'})
+				uni.removeStorage({key: 'token'})
 			}
 		},
 	}

@@ -22,7 +22,8 @@
 		{
 			"path": "pages/home/index",
 			"style": {
-				"navigationBarTitleText": "演示demo - 主页"
+				"navigationBarTitleText": "演示demo - 主页",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
