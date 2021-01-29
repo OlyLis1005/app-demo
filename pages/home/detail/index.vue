@@ -34,9 +34,20 @@
 				<text class="detail-title">终端拓扑</text>
 			</view>
 			<view class="cascader-wrapper">
-				<cascader :options="treeData" :value="selectedValue" @change="handleChange" :is-show-nav="false"></cascader>
+				<cascader :options="treeData" :value="selectedValue" @change="handleChange" :is-show-nav="false">
+					<template v-slot="{ data }">
+						<view>
+							{{ data.label }}
+							<!-- v-if="data.eventHappen" -->
+							<uni-icons class="show-dialog-icon" type="info" @click.stop.native="showDialog(data)"></uni-icons>
+						</view>
+					</template>
+				</cascader>
 			</view>
 		</view>
+		<DDialog :visible="dialogVisible" @cancel="onCancel" :title="dialogData.label" cancel-text="关闭" :confirm-text="null">
+			<view>显示点什么</view>
+		</DDialog>
 	</view>
 </template>
 
@@ -46,6 +57,9 @@
 
 	const formatTreeData = treeData => {
 		treeData.forEach(item => {
+			if (item.eventHappen) {
+				console.log('有一个eventHappen', item)
+			}
 			item.label = item.shortcut || item.address
 			item.value = item.id
 			if (item.children) formatTreeData(item.children)
@@ -62,57 +76,9 @@
 				detail: {
 					name: '终端设备000000001',
 				},
-				treeData: [
-					// {
-					// 	value: 1,
-					// 	label: '一级 1',
-					// 	children: [{
-					// 		value: 11,
-					// 		label: '二级 1-1',
-					// 		children: [{
-					// 			value: 111,
-					// 			label: '三级 1-1-1'
-					// 		}]
-					// 	}],
-					// }, {
-					// 	value: 2,
-					// 	label: '一级 2',
-					// 	children: [{
-					// 		value: 21,
-					// 		label: '二级 2-1',
-					// 		children: [{
-					// 			value: 211,
-					// 			label: '三级 2-1-1'
-					// 		}]
-					// 	}, {
-					// 		value: 22,
-					// 		label: '二级 2-2',
-					// 		children: [{
-					// 			value: 221,
-					// 			label: '三级 2-2-1'
-					// 		}]
-					// 	}]
-					// }, {
-					// 	value: 3,
-					// 	label: '一级 3',
-					// 	children: [{
-					// 		value: 31,
-					// 		label: '二级 3-1',
-					// 		children: [{
-					// 			value: 311,
-					// 			label: '三级 3-1-1'
-					// 		}]
-					// 	}, {
-					// 		value: 32,
-					// 		label: '二级 3-2',
-					// 		children: [{
-					// 			value: 321,
-					// 			label: '三级 3-2-1'
-					// 		}]
-					// 	}]
-					// }
-				],
-				selectedValue: []
+				treeData: [],
+				selectedValue: [],
+				dialogVisible: false
 			}
 		},
 		onLoad(options) {
@@ -148,11 +114,15 @@
 				console.log(clickItem)
 				this.selectedValue = selectedValue
 			},
-			onConfirm(selectedValue) {
-				console.log('onConfirm', this.selectedValue)
+			showDialog(data) {
+				console.log('showDialog', data)
+				this.dialogData = data
+				this.dialogVisible = true
 			},
 			onCancel() {
 				console.log('onCancel')
+				this.dialogVisible = false
+				this.dialogData = {}
 			},
 		},
 	}
@@ -212,5 +182,9 @@
 
 	.cascader-wrapper {
 		height: 300px;
+	}
+
+	.show-dialog-icon {
+		margin-left: 10px;
 	}
 </style>

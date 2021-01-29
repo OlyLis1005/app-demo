@@ -4,8 +4,8 @@
 		<view class="dialog-container" :style="containerStyle">
 			<view class="dialog-header clearfix">
 				<view class="dialog-title">{{title}}</view>
-				<text class="dialog-btn pull-right confirm-btn" @click="onClickConfirm()">确认</text>
-				<text class="dialog-btn pull-left" @click="onClickCancel()">取消</text>
+				<text v-if="confirmText" class="dialog-btn pull-right confirm-btn" @click="onClickConfirm()">{{ confirmText }}</text>
+				<text v-if="cancelText" class="dialog-btn pull-left" @click="onClickCancel()">{{ cancelText }}</text>
 			</view>
 			<view class="dialog-content">
 				<slot></slot>
@@ -33,11 +33,19 @@
 			},
 			onConfirm: {
 				type: Function,
-				default() {return value => {}}
+				default: null
 			},
 			onCancel: {
 				type: Function,
-				default() {return () => {}}
+				default: null
+			},
+			cancelText: {
+				type: String,
+				default: '取消'
+			},
+			confirmText: {
+				type: String,
+				default: '确认'
 			},
 		},
 		data() {
@@ -83,7 +91,7 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
-			z-index: 10;
+			z-index: 11;
 			background: #fff;
 		}
 		.dialog-header {

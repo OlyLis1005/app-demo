@@ -22,7 +22,7 @@
 			<view class="list-header">安全</view>
 			<view class="list-container">
 				<uni-list>
-					<uni-list-item title="密码设置" link to="/pages/index/detail/index"></uni-list-item>
+					<uni-list-item title="密码设置" link to="/pages/mine/password"></uni-list-item>
 					<uni-list-item title="已实名认证" link></uni-list-item>
 					<uni-list-item title="修改绑定手机号" link rightText="186****6981"></uni-list-item>
 				</uni-list>
@@ -56,8 +56,6 @@
 				email: 'sing173@126.com',
 				switchChecked: false
 			}
-		},
-		computed: {
 		},
 		onShow () {
 			this.getUserInfoFromStorage()

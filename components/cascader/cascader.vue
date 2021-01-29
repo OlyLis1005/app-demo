@@ -1,5 +1,5 @@
 <template>
-	<view class="cascader">
+	<view ref="cascaderRef" class="cascader">
 		<view v-if="isShowNav" class="bread-crumb clearfix">
 			<view class="bread-crumb-root">当前：</view>
 			<view class="bread-crumb-item" v-for="(item, index) in breadCrumbList" :key="item.value" >
@@ -12,7 +12,9 @@
 				<view class="options-row clearfix" :style="rowStyle">
 						<view class="options-column" v-for="(opitons, columnIndex) in optionsList" :key="columnIndex" :style="columnStyle">
 						<scroll-view scroll-y style="height:100%">
-							<view class="options-item" v-for="(item, index) in opitons" :class="{'active': selectedValue[columnIndex] == item.value}" :key="item.value" @click="clickItem(item, columnIndex)">{{item.label}}</view>
+							<view class="options-item" v-for="item in opitons" :class="{'active': selectedValue[columnIndex] === item.value}" :key="item.value" @click="clickItem(item, columnIndex)">
+								<slot :data="item">{{item.label}}</slot>
+							</view>
 						</scroll-view>
 					</view>
 				</view>
@@ -26,6 +28,10 @@
 	export default {
 		name: 'cascader',
 		props: {
+			columnWidth: {
+				type: Number,
+				default: null
+			},
 			value: {
 				type: Array,
 				default() {return []}
@@ -40,8 +46,9 @@
 			}
 		},
 		data() {
-			this.COLUMN_WIDTH = wx.getSystemInfoSync().windowWidth / 2
 			return {
+				WIDTH: 300,
+				COLUMN_WIDTH: 150,
 				selectedValue: [],
 				optionsList: []
 			}
@@ -49,11 +56,6 @@
 		computed: {
 			breadCrumbList() {
 				return this.selectedValue.map((item, i) => this.optionsList[i].find(option => option.value === item))
-			},
-			containerStyle() {
-				return getStyleString({
-					height: this.height + 'px'
-				})
 			},
 			rowStyle() {
 				return getStyleString({
@@ -80,7 +82,17 @@
 		created() {
 			this.handleValue(this.value)
 		},
+		mounted() {
+			this.init()
+		},
 		methods: {
+			init() {
+				const query = uni.createSelectorQuery().in(this);
+				query.select('.cascader').boundingClientRect(data => {
+					this.WIDTH = data.width ? data.width : 150
+					this.COLUMN_WIDTH = this.WIDTH / 2
+				}).exec();
+			},
 			handleValue(val) {
 				this.selectedValue = []
 				this.optionsList = this.getOptionsList(val, this.options)
@@ -112,6 +124,14 @@
 </script>
 
 <style lang="scss" scoped>
+	.clearfix::after {
+		content: "";
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+
 	.cascader {
 		height: 100%;
 		
