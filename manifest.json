@@ -49,7 +49,7 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wxdb32ad957e519901",
+        "appid" : "wx00848004f8bcb609",
         "setting" : {
             "urlCheck" : false
         },

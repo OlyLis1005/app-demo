@@ -10,6 +10,7 @@
             </view>
             <view class="error-message">{{ errorMessage }}</view>
             <button type="primary" @click="login">登录</button>
+            <text @click="mockLogin">跳过登录</text>
         </view>
     </view>
 </template>
@@ -88,6 +89,13 @@
                     })
                     this.redirect()
                 })
+            },
+            mockLogin() {
+                uni.setStorage({
+                    key: 'token',
+                    data: '666666'
+                })
+                this.redirect()
             },
             redirect() {
                 try {
