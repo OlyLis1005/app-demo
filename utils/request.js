@@ -1,6 +1,7 @@
 /*  详细文档: https://uniapp.dcloud.io/api/request/request
  */
-const baseUrl = 'http://192.168.0.113:8080'
+// const baseUrl = 'http://192.168.0.113:8080'
+const baseUrl = 'http://8.134.69.61:8083'
 
 const toLogin = () => uni.navigateTo({
 	url: '/pages/authorize/index?needBack=true'
