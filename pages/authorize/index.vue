@@ -10,7 +10,7 @@
             </view>
             <view class="error-message">{{ errorMessage }}</view>
             <button type="primary" @click="login">登录</button>
-            <text @click="mockLogin">跳过登录</text>
+            <!-- <text @click="mockLogin">跳过登录</text> -->
         </view>
     </view>
 </template>

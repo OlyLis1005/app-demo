@@ -8,9 +8,15 @@ const toLogin = () => uni.navigateTo({
 })
 
 function request(param) {
-	const { url, ...rest } = param
-	const apiUrl = baseUrl + url
-	
+	const { url, params, ...rest } = param
+	let apiUrl = baseUrl + url
+	if (params) {
+		const query = Object.keys(params)
+			.map(key => Object.hasOwnProperty.call(params, key) ? `${key}=${params[key]}` : '')
+			.join('&')
+		apiUrl += '?' + query
+	}
+
 	return new Promise((resolve, reject) => {
 		const options = {
 			url: apiUrl,

@@ -12,7 +12,7 @@
 		<view class="list">
 			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id)">
 				<view class="list-item-title">
-					<text>终端{{item.deviceId}}</text>
+					<text>终端{{item.address}}</text>
 					<text class="item-status" :class="{ 'error': item.status === '0' }">{{item.status | statusFilter}}</text>
 				</view>
 				<view class="list-item-info clearfix">
@@ -77,7 +77,7 @@
 				this.$request({
 					url: '/iot/terminal/list',
 					method: 'POST',
-					data: this.listQuery,
+					params: this.listQuery,
 				}).then(res => {
 					this.loadStatus = 'more'
 					uni.stopPullDownRefresh()
@@ -166,12 +166,12 @@
 			color: #999;
 		}
 	}
-	
+
 	.list {
 		/*background-color: #eee;*/
 		padding: 10px;
 	}
-	
+
 	.list-item {
 		color: #999;
 		font-size: 12px;
