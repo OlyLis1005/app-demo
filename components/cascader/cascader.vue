@@ -7,7 +7,7 @@
 				<view v-if="index < breadCrumbList.length - 1" class="bread-crumb-icon">></view>
 			</view>
 		</view>
-		<view class="cascader-content">
+		<view class="cascader-content" :class="{'no-bread-crumb': !isShowNav}">
 			<scroll-view scroll-x scroll-with-animation :scroll-left="scrollLeft" style="height:100%;">
 				<view class="options-row clearfix" :style="rowStyle">
 						<view class="options-column" v-for="(opitons, columnIndex) in optionsList" :key="columnIndex" :style="columnStyle">
@@ -134,54 +134,57 @@
 
 	.cascader {
 		height: 100%;
-		
+
 		.bread-crumb {
 			height: 30px;
 			line-height: 30px;
 			border-bottom: 1px solid #d8d8d8;
 			padding: 0 10px;
 			font-size: 12px;
-			
+
 			.bread-crumb-root {
 				float: left;
 			}
-			
+
 			.bread-crumb-item {
 				float: left;
 			}
-			
+
 			.bread-crumb-text {
 				color: #0083FF;
 			}
-			
+
 			.bread-crumb-icon {
 				display: inline-block;
 				padding: 0 5px;
 			}
 		}
-		
+
 		.cascader-content {
 			height: calc(100% - 30px);
+      &.no-bread-crumb {
+        height: 100%;
+      }
 		}
-		
+
 		.options-row {
 			height: 100%;
 		}
-		
+
 		.options-column {
 			float: left;
 			height: 100%;
-			
+
 			box-sizing: border-box;
-			
+
 			&:not(:last-child) {
 				border-right: 1px solid #d8d8d8;
 			}
 		}
-		
+
 		.options-item {
 			padding: 10px 10px;
-			
+
 			&.active {
 				color: #ff6600;
 			}

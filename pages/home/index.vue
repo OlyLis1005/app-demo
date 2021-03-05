@@ -13,7 +13,7 @@
 			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id)">
 				<view class="list-item-title">
 					<text>终端{{item.address}}</text>
-					<text class="item-status" :class="{ 'error': item.status === '0' }">{{item.status | statusFilter}}</text>
+					<text class="item-status" :class="{ 'error': item.eventHappen }">{{item.eventHappen | statusFilter}}</text>
 				</view>
 				<view class="list-item-info clearfix">
 					<view class="info-left">
@@ -117,9 +117,9 @@
 		filters: {
 			statusFilter(code) {
 				switch(code) {
-					case '0':
+					case true:
 					return '异常'
-					case '1':
+					case false:
 					return '正常'
 				}
 			}

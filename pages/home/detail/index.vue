@@ -1,6 +1,6 @@
 <template>
 	<view class="page-container">
-		<uni-nav-bar left-icon="back" right-icon="loop" :title="detail.name" @clickLeft="back"></uni-nav-bar>
+		<uni-nav-bar left-icon="back" right-icon="loop" :title="detail.deviceId | deviceName" @clickLeft="back" @clickRight="reload"></uni-nav-bar>
 		<view class="detail-content panel">
 			<view class="detail-header">
 				<text class="detail-title">终端报告概览</text>
@@ -8,28 +8,28 @@
 			</view>
 			<view class="detail-info">
 				<view class="info-row clearfix">
-					<view class="detail-info-item">台区售电量: <text class="info-value">10010</text></view>
-					<view class="detail-info-item">台区供电量: <text class="info-value">10010</text></view>
+					<view class="detail-info-item">台区售电量: <text class="info-value">{{ detail.energySale }}</text></view>
+					<view class="detail-info-item">台区供电量: <text class="info-value">{{ detail.energySupply }}</text></view>
 				</view>
 				<view class="info-row clearfix">
-					<view class="detail-info-item">台区线损电量: <text class="info-value">10010</text></view>
-					<view class="detail-info-item">台区线损值: <text class="info-value">10010</text></view>
+					<view class="detail-info-item">台区线损电量: <text class="info-value">{{ detail.energyLost }}</text></view>
+					<view class="detail-info-item">台区线损值: <text class="info-value">{{ detail.lineLost }}%</text></view>
 				</view>
 				<view class="info-row clearfix">
-					<view class="detail-info-item">停电事件: <text class="info-value">10010</text></view>
-					<view class="detail-info-item">台区三相不平衡: <text class="info-value">10010</text></view>
+					<view class="detail-info-item">停电事件: <text class="info-value">{{ detail.eventPowerLost }}</text></view>
+					<view class="detail-info-item">台区三相不平衡: <text class="info-value">{{ detail.eventLoadBalance }}</text></view>
 				</view>
 				<view class="info-row clearfix">
-					<view class="detail-info-item">线损事件: <text class="info-value">10010</text></view>
-					<view class="detail-info-item">负荷超限事件: <text class="info-value">10010</text></view>
+					<view class="detail-info-item">线损事件: <text class="info-value">{{ detail.eventLineLost }}</text></view>
+					<view class="detail-info-item">负荷超限事件: <text class="info-value">{{ detail.eventOverLoad }}</text></view>
 				</view>
 				<view class="info-row clearfix">
-					<view class="detail-info-item">供电质量事件: <text class="info-value">10010</text></view>
-					<view class="detail-info-item">电表事件: <text class="info-value">10010</text></view>
+					<view class="detail-info-item">供电质量事件: <text class="info-value">{{ detail.eventQuality }}</text></view>
+					<view class="detail-info-item">电表事件: <text class="info-value">{{ detail.eventMeter }}</text></view>
 				</view>
 			</view>
 		</view>
-		<view class="panel">
+		<view class="panel" style="margin-bottom: 0">
 			<view class="detail-header">
 				<text class="detail-title">终端拓扑</text>
 			</view>
@@ -39,7 +39,7 @@
 						<view>
 							{{ data.label }}
 							<!-- v-if="data.eventHappen" -->
-							<uni-icons class="show-dialog-icon" type="info" @click.stop.native="showDialog(data)"></uni-icons>
+							<uni-icons v-if="data.eventHappen" class="show-dialog-icon" type="info" @click.stop.native="showDialog(data)"></uni-icons>
 						</view>
 					</template>
 				</cascader>
@@ -73,14 +73,17 @@
 		},
 		data() {
 			return {
-				detail: {
-					name: '终端设备000000001',
-				},
+				detail: {},
 				treeData: [],
 				selectedValue: [],
 				dialogVisible: false
 			}
 		},
+    filters: {
+		  deviceName(id) {
+		    return `终端设备${id}`
+      }
+    },
 		onLoad(options) {
 			console.log('onLoad', options);
 			this.id = options.id
@@ -90,19 +93,30 @@
 			this.getData(this.id)
 		},
 		methods: {
-			getData(id) {
+			getData(id, reloadCallBack) {
 				this.$request({
 					url: `/iot/terminal/topology?terminalId=${id}`,
+					// url: `/iot/mqtt/pub/topo?address=${id}`,
 					method: 'POST'
 				}).then(res => {
 					if (!this.$isOk(res)) return
 					console.log('res', res.data)
-					const treeData = res.data
-					formatTreeData(treeData)
-					console.log('treeData', treeData)
-					this.treeData = treeData
+          const { deviceList, mpTerminalListView } = res.data
+          this.detail = mpTerminalListView
+					formatTreeData(deviceList)
+					console.log('treeData', deviceList)
+					this.treeData = deviceList
+          reloadCallBack && reloadCallBack()
 				})
 			},
+      reload() {
+			  this.getData(this.id, () => {
+          uni.showToast({
+            title: '已更新',
+            icon: 'none'
+          })
+        })
+      },
 			back() {
 				console.log('back');
 				uni.navigateBack({
@@ -133,25 +147,25 @@
 		padding: 5px 10px;
 		border-bottom: 1px solid #d8d8d8;
 	}
-	
+
 	.detail-content {
 		margin-top: 10px;
 	}
 	.detail-title {
 		font-weight: bold;
 	}
-	
+
 	.detail-info {
 		padding: 0 10px;
-		
+
 		.info-row {
 			padding: 10px 0;
-			
+
 			&:not(:last-child) {
 				border-bottom: 1px solid #d8d8d8;
 			}
 		}
-		
+
 		.detail-info-item {
 			font-size: 12px;
 			position: relative;
@@ -160,11 +174,11 @@
 			float: left;
 			width: 50%;
 			box-sizing: border-box;
-			
+
 			&:nth-child(2n) {
 				border-left: 1px solid #d8d8d8;
 			}
-			
+
 			.info-value {
 				margin-left: 10px;
 				color: #999;
