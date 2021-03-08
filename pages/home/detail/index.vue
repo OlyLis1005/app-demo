@@ -45,8 +45,15 @@
 				</cascader>
 			</view>
 		</view>
-		<DDialog :visible="dialogVisible" @cancel="onCancel" :title="dialogData.label" cancel-text="关闭" :confirm-text="null">
-			<view>显示点什么</view>
+		<DDialog :visible="dialogVisible" @cancel="onCancel" title="事件总览" cancel-text="关闭" :confirm-text="null">
+			<view class="event-list" v-for="item in dialogEvents">
+        <view class="event-item">
+          <view class="event-info"><text class="event-info-label">设备地址:</text> {{ item.address }}</view>
+          <view class="event-info"><text class="event-info-label">时间发生时间:</text> {{ item.start | formatTime }}</view>
+          <view class="event-info"><text class="event-info-label">事件原因:</text> {{ item.cause }}</view>
+          <view class="event-info"><text class="event-info-label">处理建议:</text> {{ item.suggestion }}</view>
+        </view>
+      </view>
 		</DDialog>
 	</view>
 </template>
@@ -54,6 +61,8 @@
 <script>
 	import Cascader from '@/components/cascader/cascader.vue'
 	import DDialog from '@/components/d-dialog/d-dialog.vue'
+  import request from "@/utils/request";
+  import {formatTime, isEmpty} from "@/utils/common";
 
 	const formatTreeData = treeData => {
 		treeData.forEach(item => {
@@ -76,28 +85,38 @@
 				detail: {},
 				treeData: [],
 				selectedValue: [],
-				dialogVisible: false
+				dialogVisible: false,
+        dialogData: {}
 			}
 		},
+    computed: {
+		  dialogEvents() {
+		    return this.dialogData.eventMeter ? this.dialogData.eventMeter : []
+      }
+    },
     filters: {
 		  deviceName(id) {
 		    return `终端设备${id}`
-      }
+      },
+      formatTime: formatTime
     },
 		onLoad(options) {
 			console.log('onLoad', options);
 			this.id = options.id
+			this.reportId = options.reportId
 			// this.getData(this.id)
 		},
 		onShow() {
-			this.getData(this.id)
+			this.getData(this.id, this.reportId)
 		},
 		methods: {
-			getData(id, reloadCallBack) {
+			getData(terminalId, reportId, reloadCallBack) {
+			  const params = { terminalId }
+			  if (!isEmpty(this.reportId)) params.reportId = reportId
 				this.$request({
-					url: `/iot/terminal/topology?terminalId=${id}`,
-					// url: `/iot/mqtt/pub/topo?address=${id}`,
-					method: 'POST'
+					url: `/iot/terminal/topology`,
+					method: 'POST',
+          params
 				}).then(res => {
 					if (!this.$isOk(res)) return
 					console.log('res', res.data)
@@ -110,7 +129,7 @@
 				})
 			},
       reload() {
-			  this.getData(this.id, () => {
+			  this.getData(this.id, this.reportId, () => {
           uni.showToast({
             title: '已更新',
             icon: 'none'
@@ -130,8 +149,8 @@
 			},
 			showDialog(data) {
 				console.log('showDialog', data)
-				this.dialogData = data
-				this.dialogVisible = true
+        this.dialogData = data
+        this.dialogVisible = true
 			},
 			onCancel() {
 				console.log('onCancel')
@@ -201,4 +220,17 @@
 	.show-dialog-icon {
 		margin-left: 10px;
 	}
+
+  .event-list {
+    .event-item {
+      padding: 10px;
+      border-bottom: 1px solid #d8d8d8;
+      .event-info {
+        .event-info-label {
+          font-weight: bold;
+          margin-right: 8px;
+        }
+      }
+    }
+  }
 </style>

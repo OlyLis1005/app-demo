@@ -95,6 +95,7 @@
 			background: #fff;
 		}
 		.dialog-header {
+      position: relative;
 			height: 30px;
 			line-height: 30px;
 			font-size: 12px;
@@ -104,6 +105,10 @@
 			text-align: center;
 			.dialog-title {
 				display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
 			}
 			.dialog-btn {
 				font-size: 14px;

@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		<view class="list">
-			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id)">
+			<view class="list-item" v-for="item in list" :key="item.id" @click="toDetail(item.id, item.reportId)">
 				<view class="list-item-title">
 					<text>终端{{item.address}}</text>
 					<text class="item-status" :class="{ 'error': item.eventHappen }">{{item.eventHappen | statusFilter}}</text>
@@ -44,6 +44,7 @@
 </template>
 <script>
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
+  import {isEmpty} from "@/utils/common";
 
 	export default {
 		components: {uniIcons},
@@ -101,10 +102,11 @@
 				console.log('searchValue', this.listQuery.query)
 				this.getList()
 			},
-			toDetail(id) {
+			toDetail(id, reportId) {
 				console.log('toDetail');
+				const url = `/pages/home/detail/index?id=${id}` + (isEmpty(reportId) ? '' : `&reportId=${reportId}`)
 				uni.navigateTo({
-					url: `/pages/home/detail/index?id=${id}`,
+					url,
 					success() {
 						console.log('success');
 					},
